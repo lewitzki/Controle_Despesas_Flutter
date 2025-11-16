@@ -1,4 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+String generateNumericId({int length = 5}) {
+  final rand = Random();
+  return List.generate(length, (_) => rand.nextInt(10).toString()).join();
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,27 +15,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<ExpenseTile> expenses = [
-    ExpenseTile(
-      id: '1',
-      descricao: 'gasolina',
-      categoria: 'transporte',
-      data: '25/11/2025',
-      valor: '50.0',
-    ),
-  ];
+  final List<ExpenseTile> expenses = [];
 
-  void _addExpense() {
+  void _createOrUpdate(bool isCreate, ExpenseTile expense) {
     setState(() {
-      expenses.add(
-        ExpenseTile(
-          id: '2',
-          descricao: 'marmita',
-          categoria: 'comida',
-          data: '31/02/2025',
-          valor: '25.0',
-        ),
-      );
+      if (isCreate) {
+        _createExpense(expense);
+      } else {
+        _editExpense(expense.id, expense);
+      }
+    });
+  }
+
+  void _createExpense(ExpenseTile expense) {
+    setState(() {
+      expenses.add(expense);
     });
   }
 
@@ -37,13 +38,7 @@ class _HomePageState extends State<HomePage> {
 
     if (index != -1) {
       setState(() {
-        expenses[index] = ExpenseTile(
-          id: '2',
-          descricao: 'marmita 02',
-          categoria: 'comida',
-          data: '31/02/2025',
-          valor: '25.0',
-        );
+        expenses[index] = newExpense;
       });
     }
   }
@@ -52,6 +47,71 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       expenses.remove(value);
     });
+  }
+
+  void showExpenseForm({ExpenseTile? expense}) {
+    final descricaoController = TextEditingController(
+      text: expense?.descricao ?? '',
+    );
+    final categoriaController = TextEditingController(
+      text: expense?.categoria ?? '',
+    );
+    final dataController = TextEditingController(text: expense?.data ?? '');
+    final valorController = TextEditingController(text: expense?.valor ?? '');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(expense == null ? 'Nova Despesa' : 'Editar Despesa'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: descricaoController,
+                  decoration: InputDecoration(labelText: 'Descrição'),
+                ),
+                TextField(
+                  controller: categoriaController,
+                  decoration: InputDecoration(labelText: 'Categoria'),
+                ),
+                TextField(
+                  controller: dataController,
+                  decoration: InputDecoration(labelText: 'Data'),
+                ),
+                TextField(
+                  controller: valorController,
+                  decoration: InputDecoration(labelText: 'Valor'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final isCreate = (expense == null);
+                final content = ExpenseTile(
+                  id: isCreate ? generateNumericId() : expense.id,
+                  descricao: descricaoController.text,
+                  categoria: categoriaController.text,
+                  data: dataController.text,
+                  valor: valorController.text,
+                );
+                _createOrUpdate(isCreate, content);
+                Navigator.pop(context);
+              },
+              child: Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -70,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
-        onPressed: _addExpense,
+        onPressed: showExpenseForm,
         child: const Icon(Icons.add, size: 30),
       ),
 
@@ -198,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                     categoria: item.categoria,
                     data: item.data,
                     valor: item.valor,
-                    onEdit: () => _editExpense(item.id, item),
+                    onEdit: () => showExpenseForm(expense: item),
                     onRemove: () => _removeExpense(item),
                   );
                 }).toList(),
@@ -228,12 +288,7 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [BoxShadow(blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: child,
     );
