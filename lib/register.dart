@@ -1,4 +1,12 @@
+import 'dart:math';
+import 'package:controle_de_despesas/login.dart';
+import 'package:controle_de_despesas/user.dart';
 import 'package:flutter/material.dart';
+
+String generateNumericId({int length = 5}) {
+  final rand = Random();
+  return List.generate(length, (_) => rand.nextInt(10).toString()).join();
+}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,7 +21,19 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  void register() {
+    User.addItem(
+      User(
+        id: generateNumericId(),
+        nome: nameController.text,
+        email: nameController.text,
+        senha: nameController.text,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +145,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Cadastrando...")),
-                        );
+                        try {
+                          register();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Cadastrando...")),
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
+                        } catch(e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Erro ao cadastrar usuário")),
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -135,10 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     child: const Text(
                       "Cadastrar",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),

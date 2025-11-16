@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:controle_de_despesas/expense.dart';
-import 'package:controle_de_despesas/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -27,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void carregar() async {
-    expenses = await Firebase.carregarDados();
+    expenses = await Expense.carregarDados();
     valorTotal = expenses.fold(0.0, (soma, item) => soma + item.valor);
     setState(() {});
   }
@@ -35,9 +34,9 @@ class _HomePageState extends State<HomePage> {
   void _createOrUpdate(bool isCreate, Expense expense) {
     setState(() {
       if (isCreate) {
-        Firebase.addItem(expense);
+        Expense.addItem(expense);
       } else {
-        Firebase.updateItem(expense.id, expense);
+        Expense.updateItem(expense.id, expense);
       }
       carregar();
     });
@@ -45,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
   void _removeExpense(Expense expense) {
     setState(() {
-      Firebase.deleteItem(expense.id);
+      Expense.deleteItem(expense.id);
       carregar();
     });
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,40 @@ class Expense extends StatelessWidget {
       data: json['data'],
       valor: json['valor']
     );
+  }
+
+  static Future<List<Expense>> carregarDados() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('despesas')
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Expense.fromJson(doc.id, doc.data()))
+        .toList();
+  }
+
+  static Future<void> addItem(Expense expense) async {
+    await FirebaseFirestore.instance.collection('despesas').add({
+      'id': expense.id,
+      'descricao': expense.descricao,
+      'categoria': expense.categoria,
+      'data': expense.data,
+      'valor': expense.valor
+    });
+  }
+
+  static Future<void> updateItem(String id, Expense expense) async {
+    await FirebaseFirestore.instance.collection('despesas').doc(id).update({
+      'id': expense.id,
+      'descricao': expense.descricao,
+      'categoria': expense.categoria,
+      'data': expense.data,
+      'valor': expense.valor
+    });
+  }
+
+  static Future<void> deleteItem(String id) async {
+    await FirebaseFirestore.instance.collection('despesas').doc(id).delete();
   }
 
   @override
