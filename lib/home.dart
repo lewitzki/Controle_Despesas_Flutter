@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Expense> expenses = [];
+  String valorTotal = '0';
 
   @override
   void initState() {
@@ -155,14 +156,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Total no período filtrado',
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     SizedBox(height: 5),
                     Text(
-                      'R\$ 150,00',
+                      'R\$ $valorTotal',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 28,
