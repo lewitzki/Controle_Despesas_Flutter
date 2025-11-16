@@ -1,7 +1,58 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<ExpenseTile> expenses = [
+    ExpenseTile(
+      id: '1',
+      descricao: 'gasolina',
+      categoria: 'transporte',
+      data: '25/11/2025',
+      valor: '50.0',
+    ),
+  ];
+
+  void _addExpense() {
+    setState(() {
+      expenses.add(
+        ExpenseTile(
+          id: '2',
+          descricao: 'marmita',
+          categoria: 'comida',
+          data: '31/02/2025',
+          valor: '25.0',
+        ),
+      );
+    });
+  }
+
+  void _editExpense(String id, ExpenseTile newExpense) {
+    final index = expenses.indexWhere((e) => e.id == id);
+
+    if (index != -1) {
+      setState(() {
+        expenses[index] = ExpenseTile(
+          id: '2',
+          descricao: 'marmita 02',
+          categoria: 'comida',
+          data: '31/02/2025',
+          valor: '25.0',
+        );
+      });
+    }
+  }
+
+  void _removeExpense(ExpenseTile value) {
+    setState(() {
+      expenses.remove(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +70,7 @@ class HomePage extends StatelessWidget {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
-        onPressed: () {},
+        onPressed: _addExpense,
         child: const Icon(Icons.add, size: 30),
       ),
 
@@ -139,18 +190,21 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              const ExpenseTile(
-                descricao: 'gasolina',
-                categoria: 'transporte',
-                data: '25/11/2025',
-                valor: 'R\$ 50,00',
-              ),
+              Column(
+                children: expenses.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
 
-              const ExpenseTile(
-                descricao: 'mercado',
-                categoria: 'alimentação',
-                data: '12/11/2025',
-                valor: 'R\$ 100,00',
+                  return ExpenseTile(
+                    id: item.id,
+                    descricao: item.descricao,
+                    categoria: item.categoria,
+                    data: item.data,
+                    valor: item.valor,
+                    onEdit: () => _editExpense(item.id, item),
+                    onRemove: () => _removeExpense(item),
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -191,17 +245,24 @@ class HomePage extends StatelessWidget {
 }
 
 class ExpenseTile extends StatelessWidget {
+  final String id;
   final String descricao;
   final String categoria;
   final String data;
   final String valor;
 
+  final VoidCallback? onEdit;
+  final VoidCallback? onRemove;
+
   const ExpenseTile({
     super.key,
+    required this.id,
     required this.descricao,
     required this.categoria,
     required this.data,
     required this.valor,
+    this.onEdit,
+    this.onRemove,
   });
 
   @override
@@ -233,9 +294,9 @@ class ExpenseTile extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    TextButton(onPressed: () {}, child: const Text('Editar')),
+                    TextButton(onPressed: onEdit, child: const Text('Editar')),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: onRemove,
                       child: const Text(
                         'Excluir',
                         style: TextStyle(color: Colors.red),
