@@ -251,7 +251,17 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
 
               Column(
-                children: expenses.map((item) {
+                children: expenses.isEmpty
+                  ? [
+                    Padding(
+                        padding: EdgeInsets.all(20.0),
+                      child: Text(
+                          'Nenhuma despesa cadastrada',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                ]
+                : expenses.map((item) {
                   return ExpenseTile(
                     id: item.id,
                     descricao: item.descricao,
