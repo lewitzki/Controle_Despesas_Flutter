@@ -28,21 +28,18 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
-                // TÍTULO
                 Text(
                   "Criar Conta",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: Colors.green,
                   ),
                 ),
 
                 const SizedBox(height: 40),
 
-                // NOME
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(
@@ -60,7 +57,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 20),
 
-                // EMAIL
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -82,7 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 20),
 
-                // SENHA
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -104,7 +99,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 20),
 
-                // CONFIRMAR SENHA
                 TextFormField(
                   controller: confirmPasswordController,
                   obscureText: true,
@@ -126,7 +120,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 30),
 
-                // BOTÃO CADASTRAR
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
@@ -138,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.green,
                     ),
                     child: const Text(
                       "Cadastrar",
@@ -152,7 +145,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 20),
 
-                // BOTÃO VOLTAR PARA LOGIN
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);

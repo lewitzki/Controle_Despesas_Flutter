@@ -26,19 +26,17 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
 
-                // TÍTULO
                 Text(
                   "Login",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: Colors.green,
                   ),
                 ),
 
                 const SizedBox(height: 40),
 
-                // CAMPO E-MAIL
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -60,7 +58,6 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 20),
 
-                // CAMPO SENHA
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -82,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 30),
 
-                // BOTÃO LOGIN
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -96,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.green,
                     ),
                     child: Text(
                       "Entrar",
