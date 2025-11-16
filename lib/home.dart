@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:controle_de_despesas/expense.dart';
+import 'package:controle_de_despesas/firebase.dart';
 import 'package:flutter/material.dart';
 
 String generateNumericId({int length = 5}) {
@@ -14,41 +16,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<ExpenseTile> expenses = [];
+  List<Expense> expenses = [];
 
-  void _createOrUpdate(bool isCreate, ExpenseTile expense) {
+  @override
+  void initState() {
+    super.initState();
+    carregar();
+  }
+
+  void carregar() async {
+    expenses = await Firebase.carregarDados();
+    setState(() {});
+  }
+
+  void _createOrUpdate(bool isCreate, Expense expense) {
     setState(() {
       if (isCreate) {
-        _createExpense(expense);
+        Firebase.addItem(expense);
       } else {
-        _editExpense(expense.id, expense);
+        Firebase.updateItem(expense.id, expense);
       }
+      carregar();
     });
   }
 
-  void _createExpense(ExpenseTile expense) {
+  void _removeExpense(Expense expense) {
     setState(() {
-      expenses.add(expense);
+      Firebase.deleteItem(expense.id);
+      carregar();
     });
   }
 
-  void _editExpense(String id, ExpenseTile newExpense) {
-    final index = expenses.indexWhere((e) => e.id == id);
-
-    if (index != -1) {
-      setState(() {
-        expenses[index] = newExpense;
-      });
-    }
-  }
-
-  void _removeExpense(ExpenseTile value) {
-    setState(() {
-      expenses.remove(value);
-    });
-  }
-
-  void showExpenseForm({ExpenseTile? expense}) {
+  void showExpenseForm({Expense? expense}) {
     final descricaoController = TextEditingController(
       text: expense?.descricao ?? '',
     );
@@ -95,7 +94,7 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 final isCreate = (expense == null);
-                final content = ExpenseTile(
+                final content = Expense(
                   id: isCreate ? generateNumericId() : expense.id,
                   descricao: descricaoController.text,
                   categoria: categoriaController.text,
@@ -291,26 +290,29 @@ class _HomePageState extends State<HomePage> {
 
               Column(
                 children: expenses.isEmpty
-                  ? [
-                    Padding(
-                        padding: EdgeInsets.all(20.0),
-                      child: Text(
-                          'Nenhuma despesa cadastrada',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                ]
-                : expenses.map((item) {
-                  return ExpenseTile(
-                    id: item.id,
-                    descricao: item.descricao,
-                    categoria: item.categoria,
-                    data: item.data,
-                    valor: item.valor,
-                    onEdit: () => showExpenseForm(expense: item),
-                    onRemove: () => _removeExpense(item),
-                  );
-                }).toList(),
+                    ? [
+                        Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Text(
+                            'Nenhuma despesa cadastrada',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ]
+                    : expenses.map((item) {
+                        return Expense(
+                          id: item.id,
+                          descricao: item.descricao,
+                          categoria: item.categoria,
+                          data: item.data,
+                          valor: item.valor,
+                          onEdit: () => showExpenseForm(expense: item),
+                          onRemove: () => _removeExpense(item),
+                        );
+                      }).toList(),
               ),
             ],
           ),
@@ -340,75 +342,6 @@ class _HomePageState extends State<HomePage> {
         boxShadow: [BoxShadow(blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: child,
-    );
-  }
-}
-
-class ExpenseTile extends StatelessWidget {
-  final String id;
-  final String descricao;
-  final String categoria;
-  final String data;
-  final String valor;
-
-  final VoidCallback? onEdit;
-  final VoidCallback? onRemove;
-
-  const ExpenseTile({
-    super.key,
-    required this.id,
-    required this.descricao,
-    required this.categoria,
-    required this.data,
-    required this.valor,
-    this.onEdit,
-    this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              descricao,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text('Categoria: $categoria'),
-            Text('Data: $data'),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  valor,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  children: [
-                    TextButton(onPressed: onEdit, child: const Text('Editar')),
-                    TextButton(
-                      onPressed: onRemove,
-                      child: const Text(
-                        'Excluir',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
