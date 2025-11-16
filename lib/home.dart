@@ -191,10 +191,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
 
               Column(
-                children: expenses.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final item = entry.value;
-
+                children: expenses.map((item) {
                   return ExpenseTile(
                     id: item.id,
                     descricao: item.descricao,
@@ -233,7 +230,6 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
