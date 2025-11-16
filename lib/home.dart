@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 String generateNumericId({int length = 5}) {
@@ -178,8 +177,48 @@ class _HomePageState extends State<HomePage> {
                             decoration: _inputDecoration('Mês'),
                             items: const [
                               DropdownMenuItem(
-                                value: 'Todos',
+                                value: 'all',
                                 child: Text('Todos'),
+                              ),
+                              DropdownMenuItem(
+                                value: '01',
+                                child: Text('Janeiro'),
+                              ),
+                              DropdownMenuItem(
+                                value: '02',
+                                child: Text('Fevereiro'),
+                              ),
+                              DropdownMenuItem(
+                                value: '03',
+                                child: Text('Março'),
+                              ),
+                              DropdownMenuItem(
+                                value: '04',
+                                child: Text('Abril'),
+                              ),
+                              DropdownMenuItem(
+                                value: '05',
+                                child: Text('Maio'),
+                              ),
+                              DropdownMenuItem(
+                                value: '06',
+                                child: Text('Junho'),
+                              ),
+                              DropdownMenuItem(
+                                value: '07',
+                                child: Text('Julho'),
+                              ),
+                              DropdownMenuItem(
+                                value: '08',
+                                child: Text('Agosto'),
+                              ),
+                              DropdownMenuItem(
+                                value: '09',
+                                child: Text('Setembro'),
+                              ),
+                              DropdownMenuItem(
+                                value: '10',
+                                child: Text('Outubro'),
                               ),
                               DropdownMenuItem(
                                 value: '11',
