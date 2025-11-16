@@ -6,7 +6,7 @@ class Expense extends StatelessWidget {
   final String descricao;
   final String categoria;
   final String data;
-  final String valor;
+  final double valor;
 
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
@@ -53,7 +53,7 @@ class Expense extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  valor,
+                  valor.toString(),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Expense> expenses = [];
-  String valorTotal = '0';
+  double valorTotal = 0;
 
   @override
   void initState() {
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   void carregar() async {
     expenses = await Firebase.carregarDados();
+    valorTotal = expenses.fold(0.0, (soma, item) => soma + item.valor);
     setState(() {});
   }
 
@@ -57,7 +58,9 @@ class _HomePageState extends State<HomePage> {
       text: expense?.categoria ?? '',
     );
     final dataController = TextEditingController(text: expense?.data ?? '');
-    final valorController = TextEditingController(text: expense?.valor ?? '');
+    final valorController = TextEditingController(
+      text: (expense?.valor)?.toString() ?? '',
+    );
 
     showDialog(
       context: context,
@@ -109,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                   descricao: descricaoController.text,
                   categoria: categoriaController.text,
                   data: dataController.text,
-                  valor: valorController.text,
+                  valor: double.parse(valorController.text),
                 );
                 _createOrUpdate(isCreate, content);
                 Navigator.pop(context);
