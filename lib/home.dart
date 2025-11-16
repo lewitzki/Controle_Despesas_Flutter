@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:controle_de_despesas/expense.dart';
 import 'package:controle_de_despesas/firebase.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 String generateNumericId({int length = 5}) {
   final rand = Random();
@@ -80,8 +81,16 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextField(
                   controller: valorController,
-                  decoration: InputDecoration(labelText: 'Valor'),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Valor',
+                    prefixText: 'R\$ ',
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'^\d*\.?\d{0,2}'),
+                    ),
+                  ],
                 ),
               ],
             ),
