@@ -18,8 +18,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Expense> expenses = [];
   double valorTotal = 0;
+  List<Expense> expenses = [];
+  List<Expense> expensesFiltrados = [];
 
   @override
   void initState() {
@@ -30,7 +31,19 @@ class _HomePageState extends State<HomePage> {
   void carregar() async {
     expenses = await Expense.carregarDados();
     valorTotal = expenses.fold(0.0, (soma, item) => soma + item.valor);
+    expensesFiltrados = expenses;
     setState(() {});
+  }
+
+  void filtrar(String value) {
+    setState(() {
+      expensesFiltrados = expenses
+          .where(
+            (item) =>
+                item.descricao.toLowerCase().contains(value.toLowerCase()),
+          )
+          .toList();
+    });
   }
 
   void _createOrUpdate(bool isCreate, Expense expense) {
@@ -192,118 +205,17 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 20),
 
-              _buildRoundedCard(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            decoration: _inputDecoration('Mês'),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'all',
-                                child: Text('Todos'),
-                              ),
-                              DropdownMenuItem(
-                                value: '01',
-                                child: Text('Janeiro'),
-                              ),
-                              DropdownMenuItem(
-                                value: '02',
-                                child: Text('Fevereiro'),
-                              ),
-                              DropdownMenuItem(
-                                value: '03',
-                                child: Text('Março'),
-                              ),
-                              DropdownMenuItem(
-                                value: '04',
-                                child: Text('Abril'),
-                              ),
-                              DropdownMenuItem(
-                                value: '05',
-                                child: Text('Maio'),
-                              ),
-                              DropdownMenuItem(
-                                value: '06',
-                                child: Text('Junho'),
-                              ),
-                              DropdownMenuItem(
-                                value: '07',
-                                child: Text('Julho'),
-                              ),
-                              DropdownMenuItem(
-                                value: '08',
-                                child: Text('Agosto'),
-                              ),
-                              DropdownMenuItem(
-                                value: '09',
-                                child: Text('Setembro'),
-                              ),
-                              DropdownMenuItem(
-                                value: '10',
-                                child: Text('Outubro'),
-                              ),
-                              DropdownMenuItem(
-                                value: '11',
-                                child: Text('Novembro'),
-                              ),
-                              DropdownMenuItem(
-                                value: '12',
-                                child: Text('Dezembro'),
-                              ),
-                            ],
-                            onChanged: (v) {},
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            decoration: _inputDecoration('Categoria'),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    TextField(decoration: _inputDecoration('Buscar descrição')),
-
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {},
-                            child: const Text('Filtrar'),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {},
-                            child: const Text('Limpar'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              TextField(
+                decoration: InputDecoration(
+                  labelText: "Buscar",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
+                onChanged: (value) {
+                  filtrar(value);
+                },
               ),
 
               const SizedBox(height: 20),
@@ -328,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ]
-                    : expenses.map((item) {
+                    : expensesFiltrados.map((item) {
                         return Expense(
                           id: item.id,
                           descricao: item.descricao,
@@ -344,30 +256,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-    );
-  }
-
-  static InputDecoration _inputDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide.none,
-      ),
-    );
-  }
-
-  static Widget _buildRoundedCard({required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [BoxShadow(blurRadius: 10, offset: const Offset(0, 4))],
-      ),
-      child: child,
     );
   }
 }
