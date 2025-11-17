@@ -1,3 +1,4 @@
+import 'package:controle_de_despesas/current-user.dart';
 import 'package:controle_de_despesas/register.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,16 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Future<String> login() async {
+    final user = await CurrentUser.findUserByEmail(emailController.text);
+    if (user != null && user.senha == passwordController.text) {
+      CurrentUser.login(user);
+      return "Entrando...";
+    } else {
+      return "Usuário ou senha incorreto";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 Text(
                   "Login",
                   style: TextStyle(
@@ -83,11 +93,15 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // ação ao logar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Entrando...")),
+                        final result = await login();
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(result)));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
                         );
                       }
                     },
@@ -107,7 +121,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
                     );
                   },
                   child: Text("Cadastre-se"),

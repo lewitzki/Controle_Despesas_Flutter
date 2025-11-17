@@ -7,7 +7,6 @@ class User {
   final String nome;
   final String email;
   final String senha;
-  final bool logado;
 
   final VoidCallback? onRegister;
 
@@ -16,7 +15,6 @@ class User {
     required this.nome,
     required this.email,
     required this.senha,
-    this.logado = false,
     this.onRegister,
   });
 
@@ -45,7 +43,6 @@ class User {
       'nome': user.nome,
       'email': user.email,
       'senha': user.senha,
-      'logado': user.logado
     });
   }
 
@@ -55,7 +52,6 @@ class User {
       'nome': user.nome,
       'email': user.email,
       'senha': user.senha,
-      'logado': user.logado
     });
   }
 

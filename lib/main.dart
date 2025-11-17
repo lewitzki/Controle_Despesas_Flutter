@@ -1,3 +1,4 @@
+import 'package:controle_de_despesas/login.dart';
 import 'package:controle_de_despesas/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Controle de Despesas',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.black)),
-      home: const RegisterPage(),
+      home: const LoginPage(),
     );
   }
 }
