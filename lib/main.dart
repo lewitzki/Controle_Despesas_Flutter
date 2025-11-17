@@ -1,5 +1,7 @@
+import 'package:controle_de_despesas/current-user.dart';
+import 'package:controle_de_despesas/home.dart';
 import 'package:controle_de_despesas/login.dart';
-import 'package:controle_de_despesas/register.dart';
+import 'package:controle_de_despesas/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -14,18 +16,22 @@ void main() async {
     ),
   );
 
-  runApp(const MyApp());
+  final User? logado = await CurrentUser.getUserLoggedIn();
+  final page = (logado == null) ? LoginPage() : HomePage();
+
+  runApp(MyApp(page));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget page;
+  const MyApp(this.page, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Controle de Despesas',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.black)),
-      home: const LoginPage(),
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.green)),
+      home: page,
     );
   }
 }

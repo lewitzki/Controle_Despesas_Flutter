@@ -26,6 +26,17 @@ class CurrentUser {
     return User.fromJson(doc.id, doc.data());
   }
 
+  static Future<User?> getUserLoggedIn() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc('logado')
+        .get();
+
+    if (!snapshot.exists) return null;
+
+    return User.fromJson(snapshot.id, snapshot.data()!);
+  }
+
   static Future<void> login(User user) async {
     await FirebaseFirestore.instance.collection('usuarios').doc('logado').set({
       'id': user.id,
