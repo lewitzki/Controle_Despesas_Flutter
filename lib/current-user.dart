@@ -46,10 +46,10 @@ class CurrentUser {
     });
   }
 
-  static Future<void> logout(String id) async {
+  static Future<void> logout() async {
     await FirebaseFirestore.instance
-        .collection('usuario_logado')
-        .doc(id)
+        .collection('usuarios')
+        .doc('logado')
         .delete();
   }
 }

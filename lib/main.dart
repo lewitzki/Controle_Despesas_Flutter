@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Controle de Despesas',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.green)),
+      debugShowCheckedModeBanner: false,
       home: page,
     );
   }

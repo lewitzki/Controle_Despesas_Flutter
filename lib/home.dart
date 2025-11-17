@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:controle_de_despesas/current-user.dart';
 import 'package:controle_de_despesas/expense.dart';
+import 'package:controle_de_despesas/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -130,12 +132,24 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         title: const Text(
           'Controle de Despesas',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: () async {
+              await CurrentUser.logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            },
+          ),
+        ],
       ),
 
       floatingActionButton: FloatingActionButton(
